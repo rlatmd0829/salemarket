@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-public class like {
+public class Heart {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

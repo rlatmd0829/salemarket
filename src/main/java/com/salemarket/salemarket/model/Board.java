@@ -1,8 +1,10 @@
 package com.salemarket.salemarket.model;
 
+import com.salemarket.salemarket.dto.BoardResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -39,5 +41,13 @@ public class Board {
         this.content = content;
         this.category = category;
         this.region = region;
+    }
+
+    public BoardResponseDto toDto(){
+        return BoardResponseDto.builder()
+                .title(title)
+                .category(category)
+                .region(region)
+                .build();
     }
 }

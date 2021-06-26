@@ -5,7 +5,6 @@ import com.salemarket.salemarket.dto.BoardResponseDto;
 import com.salemarket.salemarket.model.Board;
 import com.salemarket.salemarket.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,23 +14,23 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BoardService {
     private final BoardRepository boardRepository;
-    private final ModelMapper mapper;
 
-    public List<Board> getBoards(){
+    public List<BoardResponseDto> getBoards(){
         List<Board> boardAll = boardRepository.findAll();
-        return boardAll;
+        List<BoardResponseDto> boardResponseDtos = boardAll.stream().map(board -> board.toDto()).collect(Collectors.toList());
 
-        // entity 그대로 받아서 넣는중 dto로 변경하는법 찾아야함...
-        // 특히 List엔티티 ListDTo 서로 변환 하는법..
+        // stream을 이용하여 for문 대신 사용가능
+        // 여기서 board는 boardAll.stream()을 사용하면 안에 원소값을 한개씩 나오는데 그게 board이다.
+        // 하나씩 나온 board를 BoardResponseDto로 변환 시켜준후 List로 만들어준다.
+        // boardResponseDto로 변환시키기 위해서 생성자 대신해서 Builder 패턴을 사용해보았다.
+
+        return boardResponseDtos;
+
     }
 
-    public void addBoard(Board board) {
-        //Board board = mapper.map(boardRequestDto, Board.class);
-        boardRepository.save(board);
-        //boardRepository.save(boardRequestDto.toEntity());
-        //boardRequestDto.toEntity()
+    public void addBoard(BoardRequestDto boardRequestDto) {
 
-        // entity 그대로 받아서 넣는중 dto로 변경하는법 찾아야함...
-        // (Builder, Modelmapper 둘다 안되긴했음..)
+        boardRepository.save(boardRequestDto.toEntity());
+
     }
 }

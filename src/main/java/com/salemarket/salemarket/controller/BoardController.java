@@ -18,13 +18,13 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("/boards")
-    public List<Board> getBoards(){
-        List<Board> boards = boardService.getBoards();
+    public List<BoardResponseDto> getBoards(){
+        List<BoardResponseDto> boards = boardService.getBoards();
         return boards;
     }
 
     @PostMapping("/boards")
-    public void saveBoard(@RequestBody Board board){
-        boardService.addBoard(board);
+    public void saveBoard(@RequestBody BoardRequestDto boardRequestDto){
+        boardService.addBoard(boardRequestDto);
     }
 }
