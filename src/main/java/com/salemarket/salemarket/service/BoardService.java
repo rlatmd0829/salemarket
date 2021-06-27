@@ -6,6 +6,7 @@ import com.salemarket.salemarket.model.Board;
 import com.salemarket.salemarket.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,5 +33,22 @@ public class BoardService {
 
         boardRepository.save(boardRequestDto.toEntity());
 
+    }
+
+    @Transactional
+    public void updateBoard(Long boardId, BoardRequestDto boardRequestDto) {
+        Board board = boardRepository.findById(boardId).orElseThrow(
+                ()-> new IllegalArgumentException("게시글이 존재하지 않습니다.")
+        );
+        // User 추가되면 게시글 작성 User랑 현재 로그인한 User가 같을 경우만 수정 가능하게 변경해야함
+        board.update(boardRequestDto);
+    }
+
+
+    public void deleteBoard(Long boardId) {
+        Board board = boardRepository.findById(boardId).orElseThrow(
+                ()-> new IllegalArgumentException("게시글이 존재하지 않습니다.")
+        );
+        boardRepository.deleteById(boardId);
     }
 }

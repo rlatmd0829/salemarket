@@ -1,14 +1,15 @@
 package com.salemarket.salemarket.model;
 
+import com.salemarket.salemarket.dto.BoardRequestDto;
 import com.salemarket.salemarket.dto.BoardResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 @Getter
@@ -33,7 +34,7 @@ public class Board {
 //    private List<Comment> comments = new ArrayList<>();
 //
 //    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<like> likes = new ArrayList<>();
+//    private List<Heart> likes = new ArrayList<>();
 
     @Builder
     public Board(String title, String content, String category, String region){
@@ -45,9 +46,17 @@ public class Board {
 
     public BoardResponseDto toDto(){
         return BoardResponseDto.builder()
+                .id(id)
                 .title(title)
                 .category(category)
                 .region(region)
                 .build();
+    }
+
+    public void update(BoardRequestDto boardRequestDto){
+        this.title = boardRequestDto.getTitle();
+        this.content = boardRequestDto.getContent();
+        this.category = boardRequestDto.getCategory();
+        this.region = boardRequestDto.getRegion();
     }
 }
