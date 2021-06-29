@@ -16,14 +16,13 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("/boards")
-    public List<BoardResponseDto> getBoards(){
-        List<BoardResponseDto> boards = boardService.getBoards();
-        return boards;
+    public List<BoardResponseDto> getBoard(){
+        return boardService.getBoard();
     }
 
     @PostMapping("/boards")
     public ResponseEntity saveBoard(@RequestBody BoardRequestDto boardRequestDto){
-        boardService.addBoard(boardRequestDto);
+        boardService.saveBoard(boardRequestDto);
         return new ResponseEntity("게시글을 저장하였습니다.", HttpStatus.OK);
     }
 

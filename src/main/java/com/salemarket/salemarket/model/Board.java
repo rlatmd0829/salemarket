@@ -6,10 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -26,9 +23,9 @@ public class Board {
     private String category;
     private String region;
 
-//    @ManyToOne
-//    @JoinColumn(name = "USER_ID")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private User user;
 //
 //    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private List<Comment> comments = new ArrayList<>();
@@ -46,7 +43,7 @@ public class Board {
 
     public BoardResponseDto toDto(){
         return BoardResponseDto.builder()
-                .id(id)
+                .boardId(id)
                 .title(title)
                 .category(category)
                 .region(region)

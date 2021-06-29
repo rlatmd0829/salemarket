@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class BoardResponseDto {
-    private Long id;
+    private Long boardId;
     private String title;
     //private String imgUrl;
     private String region;
@@ -21,8 +21,8 @@ public class BoardResponseDto {
 //    }
 
     @Builder
-    public BoardResponseDto(Long id, String title, String category, String region){
-        this.id = id;
+    public BoardResponseDto(Long boardId, String title, String category, String region){
+        this.boardId = boardId;
         this.title = title;
         this.category = category;
         this.region = region;
