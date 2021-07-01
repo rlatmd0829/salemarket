@@ -1,6 +1,5 @@
 package com.salemarket.salemarket.dto;
 
-import com.salemarket.salemarket.model.Board;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,12 +9,12 @@ import lombok.NoArgsConstructor;
 public class CommentResponseDto {
     private Long commentId;
     private String content;
-    private Board board;
+    private Long boardId;
 
     @Builder
-    public CommentResponseDto(Long commentId, String content, Board board){
+    public CommentResponseDto(Long commentId, String content, Long boardId){
         this.commentId = commentId;
         this.content = content;
-        this.board = board;
+        this.boardId = boardId;
     }
 }

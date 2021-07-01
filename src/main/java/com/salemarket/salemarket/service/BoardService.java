@@ -44,6 +44,8 @@ public class BoardService {
     }
 
 
+    // 댓글있는 게시글 삭제시 삭제가 안되었다.
+    // board와 comment 양방향 매핑 후 cascade ALL 걸어주니까 댓글이 있는 게시글이라도 삭제가 되었다.
     public void deleteBoard(Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(
                 ()-> new IllegalArgumentException("게시글이 존재하지 않습니다.")

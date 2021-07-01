@@ -1,5 +1,6 @@
 package com.salemarket.salemarket.model;
 
+import com.salemarket.salemarket.dto.CommentRequestDto;
 import com.salemarket.salemarket.dto.CommentResponseDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class Comment {
         return CommentResponseDto.builder()
                 .commentId(id)
                 .content(content)
-                .board(board)
+                .boardId(board.getId())
                 .build();
     }
     @Builder
@@ -38,6 +39,10 @@ public class Comment {
 
     public void addBoard(Board board) {
         this.board = board;
+    }
+
+    public void update(CommentRequestDto commentRequestDto){
+        content = commentRequestDto.getContent();
     }
 
 
