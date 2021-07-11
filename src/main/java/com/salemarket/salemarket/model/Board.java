@@ -21,9 +21,10 @@ public class Board {
     private Long id;
     private String title;
     private String content;
-    //private String imgUrl;
+
     private String category;
     private String region;
+    private String imgUrl;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
@@ -36,11 +37,12 @@ public class Board {
     private List<Heart> likes = new ArrayList<>();
 
     @Builder
-    public Board(String title, String content, String category, String region){
+    public Board(String title, String content, String category, String region, String imgUrl){
         this.title = title;
         this.content = content;
         this.category = category;
         this.region = region;
+        this.imgUrl = imgUrl;
     }
 
     public BoardResponseDto toDto(){
@@ -49,6 +51,7 @@ public class Board {
                 .title(title)
                 .category(category)
                 .region(region)
+                .imgUrl(imgUrl)
                 .build();
     }
 
@@ -57,5 +60,6 @@ public class Board {
         this.content = boardRequestDto.getContent();
         this.category = boardRequestDto.getCategory();
         this.region = boardRequestDto.getRegion();
+        this.imgUrl = boardRequestDto.getImgUrl();
     }
 }
