@@ -37,12 +37,13 @@ public class Board {
     private List<Heart> likes = new ArrayList<>();
 
     @Builder
-    public Board(String title, String content, String category, String region, String imgUrl){
+    public Board(String title, String content, String category, String region, String imgUrl, User user){
         this.title = title;
         this.content = content;
         this.category = category;
         this.region = region;
         this.imgUrl = imgUrl;
+        this.user = user;
     }
 
     public BoardResponseDto toDto(){
@@ -52,6 +53,7 @@ public class Board {
                 .category(category)
                 .region(region)
                 .imgUrl(imgUrl)
+                .user(user)
                 .build();
     }
 

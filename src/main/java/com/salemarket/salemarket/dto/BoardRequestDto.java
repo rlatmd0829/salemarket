@@ -1,6 +1,7 @@
 package com.salemarket.salemarket.dto;
 
 import com.salemarket.salemarket.model.Board;
+import com.salemarket.salemarket.model.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,8 +15,9 @@ public class BoardRequestDto {
 
     private String category;
     private String region;
-    //private User user;
+
     private String imgUrl;
+    private User user;
 
     public Board toEntity(){
         return Board.builder()
@@ -24,15 +26,17 @@ public class BoardRequestDto {
                 .category(category)
                 .region(region)
                 .imgUrl(imgUrl)
+                .user(user)
                 .build();
     }
 
     @Builder
-    public BoardRequestDto(String title, String content, String category, String region, String imgUrl){
+    public BoardRequestDto(String title, String content, String category, String region, String imgUrl, User user){
         this.title = title;
         this.content = content;
         this.category = category;
         this.region = region;
         this.imgUrl = imgUrl;
+        this.user = user;
     }
 }

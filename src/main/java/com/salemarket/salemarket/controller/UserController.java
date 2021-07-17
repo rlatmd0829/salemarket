@@ -1,7 +1,5 @@
 package com.salemarket.salemarket.controller;
 
-import com.salemarket.salemarket.dto.LoginRequestDto;
-import com.salemarket.salemarket.dto.LoginResponseDto;
 import com.salemarket.salemarket.dto.SignupRequestDto;
 import com.salemarket.salemarket.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +20,8 @@ public class UserController {
         return new ResponseEntity("회원가입 되었습니다.", HttpStatus.OK);
     }
 
-    @PostMapping("/user/login")
-    public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto){
-        return userService.login(loginRequestDto);
-    }
+//    @PostMapping("/user/login")
+//    public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto){
+//        return userService.login(loginRequestDto);
+//    }
 }
