@@ -5,9 +5,14 @@ import lombok.Getter;
 @Getter
 public class LoginResponseDto {
 
-    private Long id;
-    public LoginResponseDto(Long id) {
-        this.id = id;
+    private String token;
+    private Long userId;
+    private String username;
+    public LoginResponseDto(String token, Long userId, String username) {
+        this.token = token;
+        this.userId = userId;
+        this.username = username;
+
 
     }
 }

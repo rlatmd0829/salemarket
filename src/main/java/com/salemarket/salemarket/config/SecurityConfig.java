@@ -1,5 +1,7 @@
 package com.salemarket.salemarket.config;
 
+import com.salemarket.salemarket.config.jwt.JwtAuthenticationFilter;
+import com.salemarket.salemarket.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
@@ -21,6 +24,7 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CorsFilter corsFilter;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/h2-console/**");
@@ -40,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.csrf().disable();
 
@@ -51,16 +55,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/boards").permitAll()
                 .anyRequest().authenticated();
 
-        http.formLogin()
-                .loginPage("/user/login")
-                .loginProcessingUrl("/user/login")
-                //.defaultSuccessUrl("/boards")
-                .permitAll();
+        http.formLogin().disable();
 
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+                UsernamePasswordAuthenticationFilter.class);
 
-        http.logout()
-                .logoutUrl("/user/logout")
-                .permitAll();
 
 
 

@@ -1,5 +1,6 @@
 package com.salemarket.salemarket.service;
 
+import com.salemarket.salemarket.config.jwt.JwtTokenProvider;
 import com.salemarket.salemarket.dto.LoginRequestDto;
 import com.salemarket.salemarket.dto.LoginResponseDto;
 import com.salemarket.salemarket.dto.SignupRequestDto;
@@ -15,11 +16,19 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public void signup(SignupRequestDto signupRequestDto) {
-        String encodPassword = bCryptPasswordEncoder.encode(signupRequestDto.getPassword());
-        signupRequestDto.passwordUpdate(encodPassword);
-        userRepository.save(signupRequestDto.toEntity());
+    public boolean signup(SignupRequestDto signupRequestDto) {
+        User user = userRepository.findByUsername(signupRequestDto.getUsername());
+        if (user == null){
+            String encodPassword = bCryptPasswordEncoder.encode(signupRequestDto.getPassword());
+            signupRequestDto.passwordUpdate(encodPassword);
+            userRepository.save(signupRequestDto.toEntity());
+            return true;
+        }else{
+            return false;
+        }
+
     }
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
@@ -30,6 +39,6 @@ public class UserService {
         if(!bCryptPasswordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())){
             throw new IllegalStateException("잘못된 비밀번호 입니다.");
         }
-        return new LoginResponseDto(user.getId());
+        return new LoginResponseDto(jwtTokenProvider.createToken(user.getUsername()),user.getId(), user.getUsername());
     }
 }
