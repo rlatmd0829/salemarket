@@ -33,12 +33,16 @@ public class Comment {
                 .build();
     }
     @Builder
-    public Comment(String content){
+    public Comment(String content, User user){
         this.content = content;
+        this.user = user;
     }
 
     public void addBoard(Board board) {
         this.board = board;
+    }
+    public void addUser(User user){
+        this.user = user;
     }
 
     public void update(CommentRequestDto commentRequestDto){

@@ -3,7 +3,9 @@ package com.salemarket.salemarket.service;
 import com.salemarket.salemarket.dto.BoardRequestDto;
 import com.salemarket.salemarket.dto.BoardResponseDto;
 import com.salemarket.salemarket.model.Board;
+import com.salemarket.salemarket.model.User;
 import com.salemarket.salemarket.repository.BoardRepository;
+import com.salemarket.salemarket.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BoardService {
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
 
     public List<BoardResponseDto> getBoard(){
         List<Board> boardAll = boardRepository.findAll();
@@ -35,21 +38,41 @@ public class BoardService {
     }
 
     @Transactional
-    public void updateBoard(Long boardId, BoardRequestDto boardRequestDto) {
+    public BoardRequestDto updateBoard(Long boardId, BoardRequestDto boardRequestDto, Long userId) {
         Board board = boardRepository.findById(boardId).orElseThrow(
                 ()-> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
-        // User 추가되면 게시글 작성 User랑 현재 로그인한 User가 같을 경우만 수정 가능하게 변경해야함
-        board.update(boardRequestDto);
+        User user = userRepository.findById(userId).orElseThrow(
+                ()-> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        );
+
+        // User 추가되면 게시글 작성 User랑 현재 로그인한 User가 같을 경우만 수정 가능하게 변경해야함 // 완료
+        if(board.getUser().getId().equals(userId)){
+            board.update(boardRequestDto);
+            return boardRequestDto;
+        }
+        else{
+            return null;
+        }
+
     }
 
 
     // 댓글있는 게시글 삭제시 삭제가 안되었다.
-    // board와 comment 양방향 매핑 후 cascade ALL 걸어주니까 댓글이 있는 게시글이라도 삭제가 되었다.
-    public void deleteBoard(Long boardId) {
+    // => board와 comment 양방향 매핑 후 cascade ALL 걸어주니까 댓글이 있는 게시글이라도 삭제가 되었다.
+    public boolean deleteBoard(Long boardId, Long userId) {
         Board board = boardRepository.findById(boardId).orElseThrow(
                 ()-> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
-        boardRepository.deleteById(boardId);
+        User user = userRepository.findById(userId).orElseThrow(
+                ()-> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        );
+        if(board.getUser().getId().equals(userId)){
+            boardRepository.deleteById(boardId);
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

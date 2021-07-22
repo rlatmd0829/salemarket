@@ -48,14 +48,36 @@ public class BoardController {
     }
 
     @PutMapping("/boards/{boardId}")
-    public ResponseEntity updateBoard(@PathVariable Long boardId, @RequestBody BoardRequestDto boardRequestDto){
-        boardService.updateBoard(boardId, boardRequestDto);
-        return new ResponseEntity("게시글을 수정하였습니다.", HttpStatus.OK);
+    public ResponseEntity updateBoard(@PathVariable Long boardId,@RequestParam("title") String title, @RequestParam("content") String content,
+                                      @RequestParam("category") String category, @RequestParam("region") String region,
+                                      @RequestParam(value = "file", required = false) MultipartFile files, @RequestParam(value = "imgUrl", required = false) String imgUrl,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) throws IOException {
+
+        // 이미지 수정없이 게시글 수정할 때는 s3에 업로드 할 필요 없으므로 imgUrl이 안넘어 올 경우에만 업로드를 시켜준다.
+        if(imgUrl == null) {
+            imgUrl = s3Uploder.upload(files, "board");
+        }
+        User user = userRepository.findByUsername(userDetailsImpl.getUsername());
+        BoardRequestDto boardRequestDto = new BoardRequestDto(title, content, category, region, imgUrl, user);
+        BoardRequestDto updateBoard = boardService.updateBoard(boardId, boardRequestDto, userDetailsImpl.getId());
+        if(updateBoard != null){
+            return new ResponseEntity("게시글을 수정하였습니다.", HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity("게시글을 수정할 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @DeleteMapping("/boards/{boardId}")
-    public ResponseEntity deleteBoard(@PathVariable Long boardId){
-        boardService.deleteBoard(boardId);
-        return new ResponseEntity("게시글을 삭제하였습니다.", HttpStatus.OK);
+    public ResponseEntity deleteBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
+        boolean check = boardService.deleteBoard(boardId, userDetailsImpl.getId());
+        if(check){
+            return new ResponseEntity("게시글을 삭제하였습니다.", HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity("게시글을 삭제할 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }
