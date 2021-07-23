@@ -20,7 +20,7 @@ public class BoardService {
     private final UserRepository userRepository;
 
     public List<BoardResponseDto> getBoard(){
-        List<Board> boardAll = boardRepository.findAll();
+        List<Board> boardAll = boardRepository.findAllByOrderByCreatedAtDesc();
 
         // stream을 이용하여 for문 대신 사용가능
         // 여기서 board는 boardAll.stream()을 사용하면 안에 원소값을 한개씩 나오는데 그게 board이다.

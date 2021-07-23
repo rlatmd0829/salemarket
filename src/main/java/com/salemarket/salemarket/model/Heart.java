@@ -20,4 +20,9 @@ public class Heart {
     @JoinColumn(name = "BOARD_ID")
     private Board board;
 
+    public Heart(User user, Board board){
+        this.user = user;
+        this.board = board;
+    }
+
 }

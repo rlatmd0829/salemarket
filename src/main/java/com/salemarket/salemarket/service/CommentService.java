@@ -23,7 +23,7 @@ public class CommentService {
     private final UserRepository userRepository;
 
     public List<CommentResponseDto> getComment(Long boardId) {
-        List<Comment> comments = commentRepository.findByBoardId(boardId);
+        List<Comment> comments = commentRepository.findByBoardIdOrderByCreatedAtDesc(boardId);
         return comments.stream().map(comment -> comment.toDto()).collect(Collectors.toList());
     }
 
