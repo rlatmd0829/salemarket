@@ -2,6 +2,7 @@ package com.salemarket.salemarket.controller;
 
 import com.salemarket.salemarket.config.UserDetailsImpl;
 import com.salemarket.salemarket.config.S3Uploader;
+import com.salemarket.salemarket.dto.BoardDetailResponseDto;
 import com.salemarket.salemarket.dto.BoardRequestDto;
 import com.salemarket.salemarket.dto.BoardResponseDto;
 import com.salemarket.salemarket.model.User;
@@ -25,15 +26,16 @@ public class BoardController {
     private final UserRepository userRepository;
 
     @GetMapping("/boards")
-    public List<BoardResponseDto> getBoard(){
-        return boardService.getBoard();
+    public List<BoardResponseDto> getBoard(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
+        System.out.println(userDetailsImpl);
+        if (userDetailsImpl == null){
+            return boardService.getBoard();
+        }else{
+            return boardService.getBoard(userDetailsImpl.getId());
+        }
+
     }
 
-//    @PostMapping("/boards")
-//    public ResponseEntity saveBoard(@RequestBody BoardRequestDto boardRequestDto){
-//        boardService.saveBoard(boardRequestDto);
-//        return new ResponseEntity("게시글을 저장하였습니다.", HttpStatus.OK);
-//    }
 
     @PostMapping("/boards")
     public ResponseEntity saveBoard(@RequestParam("title") String title, @RequestParam("content") String content,
@@ -77,6 +79,18 @@ public class BoardController {
         }
         else{
             return new ResponseEntity("게시글을 삭제할 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    // 좋아요를 board쪽에서 update함수로 갱신하면 반드시 새로고침이 들어가야함 바뀌기 때문에 다른 방법 생각해보기
+    @GetMapping("/boards/{boardId}/details")
+    public BoardDetailResponseDto detailsBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
+        if (userDetailsImpl == null){
+            return boardService.detail(boardId);
+        }
+        else{
+            return boardService.detail(boardId, userDetailsImpl.getId());
         }
 
     }

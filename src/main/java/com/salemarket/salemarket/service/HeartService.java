@@ -49,6 +49,7 @@ public class HeartService {
         Heart heart = heartRepository.findByBoardIdAndUserId(boardId, userId);
         if(heart == null){
             Heart newHeart = new Heart(user, board);
+            //board.heartPlus();
             heartRepository.save(newHeart);
             return newHeart;
         }else{
@@ -58,10 +59,14 @@ public class HeartService {
 
     public Heart deleteHeart(Long boardId, Long userId) {
         Heart heart = heartRepository.findByBoardIdAndUserId(boardId, userId);
+        Board board = boardRepository.findById(boardId).orElseThrow(
+                () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
+        );
         if(heart == null){
             return null;
         }else{
             heartRepository.deleteById(heart.getId());
+            //board.heartMinus();
             return heart;
         }
     }

@@ -27,6 +27,11 @@ public class CommentService {
         return comments.stream().map(comment -> comment.toDto()).collect(Collectors.toList());
     }
 
+    public List<CommentResponseDto> getComment(Long boardId, Long userId) {
+        List<Comment> comments = commentRepository.findByBoardIdOrderByCreatedAtDesc(boardId);
+        return comments.stream().map(comment -> comment.toDto()).collect(Collectors.toList());
+    }
+
     public void saveComment(Long boardId, CommentRequestDto commentRequestDto, Long userId) {
         Board board = boardRepository.findById(boardId).orElseThrow(
                 ()-> new IllegalArgumentException("게시글이 존재하지 않습니다.")

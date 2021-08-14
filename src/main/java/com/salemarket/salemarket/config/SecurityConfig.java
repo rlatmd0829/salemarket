@@ -53,6 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/user/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/boards").permitAll()
+                .antMatchers(HttpMethod.GET, "/boards/{boardId}/details").permitAll()
+                .antMatchers(HttpMethod.GET, "/boards/{boardId}/comments").permitAll()
                 .anyRequest().authenticated();
 
         http.formLogin().disable();

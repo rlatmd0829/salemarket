@@ -1,5 +1,6 @@
 package com.salemarket.salemarket.model;
 
+import com.salemarket.salemarket.dto.BoardDetailResponseDto;
 import com.salemarket.salemarket.dto.BoardRequestDto;
 import com.salemarket.salemarket.dto.BoardResponseDto;
 import lombok.Builder;
@@ -21,10 +22,11 @@ public class Board extends Timestamped {
     private Long id;
     private String title;
     private String content;
-
     private String category;
     private String region;
     private String imgUrl;
+    private Integer heartCount;
+    private boolean heartCheck;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
@@ -54,6 +56,24 @@ public class Board extends Timestamped {
                 .region(region)
                 .imgUrl(imgUrl)
                 .user(user)
+                .createdAt(getCreatedAt())
+                .heartCount(heartCount)
+                .heartCheck(heartCheck)
+                .build();
+    }
+
+    public BoardDetailResponseDto toDto2(){
+        return BoardDetailResponseDto.builder()
+                .boardId(id)
+                .title(title)
+                .content(content)
+                .category(category)
+                .region(region)
+                .imgUrl(imgUrl)
+                .user(user)
+                .createdAt(getCreatedAt())
+                .heartCount(heartCount)
+                .heartCheck(heartCheck)
                 .build();
     }
 
@@ -64,4 +84,19 @@ public class Board extends Timestamped {
         this.region = boardRequestDto.getRegion();
         this.imgUrl = boardRequestDto.getImgUrl();
     }
+
+    public void heartUpdate(boolean heartCheck, Integer heartCount){
+        this.heartCheck = heartCheck;
+        this.heartCount = heartCount;
+    }
+
+//    public void heartPlus(){
+//        heartCheck = true;
+//        heartCount++;
+//    }
+//
+//    public void heartMinus(){
+//        heartCheck = false;
+//        heartCount--;
+//    }
 }

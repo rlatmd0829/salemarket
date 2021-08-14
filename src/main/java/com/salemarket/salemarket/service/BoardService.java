@@ -1,10 +1,13 @@
 package com.salemarket.salemarket.service;
 
+import com.salemarket.salemarket.dto.BoardDetailResponseDto;
 import com.salemarket.salemarket.dto.BoardRequestDto;
 import com.salemarket.salemarket.dto.BoardResponseDto;
 import com.salemarket.salemarket.model.Board;
+import com.salemarket.salemarket.model.Heart;
 import com.salemarket.salemarket.model.User;
 import com.salemarket.salemarket.repository.BoardRepository;
+import com.salemarket.salemarket.repository.HeartRepository;
 import com.salemarket.salemarket.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,9 +21,37 @@ import java.util.stream.Collectors;
 public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
+    private final HeartRepository heartRepository;
 
+    @Transactional
     public List<BoardResponseDto> getBoard(){
         List<Board> boardAll = boardRepository.findAllByOrderByCreatedAtDesc();
+        boolean likeCheck = false;
+
+        for(int i=0; i<boardAll.size(); i++){
+            //likeCheck = heartRepository.existsByBoardIdAndUserId(boardAll.get(i).getId(), userId);
+            List<Heart> allByBoardIdHearts = boardAll.get(i).getLikes();
+            boardAll.get(i).heartUpdate(likeCheck, allByBoardIdHearts.size());
+        }
+
+        // stream을 이용하여 for문 대신 사용가능
+        // 여기서 board는 boardAll.stream()을 사용하면 안에 원소값을 한개씩 나오는데 그게 board이다.
+        // 하나씩 나온 board를 BoardResponseDto로 변환 시켜준후 List로 만들어준다.
+        // boardResponseDto로 변환시키기 위해서 생성자 대신해서 Builder 패턴을 사용해보았다.
+
+        return boardAll.stream().map(board -> board.toDto()).collect(Collectors.toList());
+
+    }
+    @Transactional
+    public List<BoardResponseDto> getBoard(Long userId){
+        List<Board> boardAll = boardRepository.findAllByOrderByCreatedAtDesc();
+        boolean likeCheck = false;
+
+        for(int i=0; i<boardAll.size(); i++){
+            likeCheck = heartRepository.existsByBoardIdAndUserId(boardAll.get(i).getId(), userId);
+            List<Heart> allByBoardIdHearts = boardAll.get(i).getLikes();
+            boardAll.get(i).heartUpdate(likeCheck, allByBoardIdHearts.size());
+        }
 
         // stream을 이용하여 for문 대신 사용가능
         // 여기서 board는 boardAll.stream()을 사용하면 안에 원소값을 한개씩 나오는데 그게 board이다.
@@ -74,5 +105,32 @@ public class BoardService {
         else{
             return false;
         }
+    }
+
+    @Transactional
+    public BoardDetailResponseDto detail(Long boardId) {
+        boolean likeCheck = false;
+        Board board = boardRepository.findById(boardId).orElseThrow(
+                ()-> new IllegalArgumentException("게시글이 존재하지 않습니다.")
+        );
+
+        List<Heart> allByBoardIdHearts = board.getLikes();
+        board.heartUpdate(likeCheck, allByBoardIdHearts.size());
+        return board.toDto2();
+    }
+
+    @Transactional
+    public BoardDetailResponseDto detail(Long boardId, Long userId) {
+        boolean likeCheck = false;
+        Board board = boardRepository.findById(boardId).orElseThrow(
+                ()-> new IllegalArgumentException("게시글이 존재하지 않습니다.")
+        );
+        User user = userRepository.findById(userId).orElseThrow(
+                ()-> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        );
+        likeCheck = heartRepository.existsByBoardIdAndUserId(board.getId(), userId);
+        List<Heart> allByBoardIdHearts = board.getLikes();
+        board.heartUpdate(likeCheck, allByBoardIdHearts.size());
+        return board.toDto2();
     }
 }

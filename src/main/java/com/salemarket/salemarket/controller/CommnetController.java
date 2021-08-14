@@ -19,8 +19,13 @@ public class CommnetController {
     private final CommentService commentService;
 
     @GetMapping("/boards/{boardId}/comments")
-    public List<CommentResponseDto> getComment(@PathVariable Long boardId){
-        return commentService.getComment(boardId);
+    public List<CommentResponseDto> getComment(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
+        if (userDetailsImpl == null) {
+            return commentService.getComment(boardId);
+        }else{
+            return commentService.getComment(boardId, userDetailsImpl.getId());
+        }
+
     }
 
     @PostMapping("/boards/{boardId}/comments")

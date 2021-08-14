@@ -9,9 +9,10 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class BoardResponseDto {
+public class BoardDetailResponseDto {
     private Long boardId;
     private String title;
+    private String content;
     private String region;
     private String category;
     private String imgUrl;
@@ -20,18 +21,12 @@ public class BoardResponseDto {
     private boolean heartCheck;
     private User user;
 
-//    public BoardResponseDto(Board board){
-//        this.id = board.getId();
-//        this.title = board.getTitle();
-//        this.category = board.getCategory();
-//        this.region = board.getRegion();
-//    }
-
     @Builder
-    public BoardResponseDto(Long boardId, String title, String category, String region, String imgUrl, LocalDateTime createdAt
+    public BoardDetailResponseDto(Long boardId, String title, String content, String category, String region, String imgUrl, LocalDateTime createdAt
             ,Integer heartCount, boolean heartCheck, User user){
         this.boardId = boardId;
         this.title = title;
+        this.content = content;
         this.category = category;
         this.region = region;
         this.imgUrl = imgUrl;
@@ -40,5 +35,4 @@ public class BoardResponseDto {
         this.heartCheck = heartCheck;
         this.user = user;
     }
-
 }
